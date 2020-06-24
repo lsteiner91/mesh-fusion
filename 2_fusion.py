@@ -8,7 +8,8 @@ import ntpath
 
 # Import shipped libraries.
 import librender
-import libmcubes
+import mcubes as libmcubes
+import cv2
 
 use_gpu = True
 if use_gpu:
@@ -69,7 +70,7 @@ class Fusion:
         parser.add_argument('--depth_dir', type=str, help='Path to depth directory; files are overwritten!')
         parser.add_argument('--out_dir', type=str, help='Path to output directory; files within are overwritten!')
         parser.add_argument('--n_views', type=int, default=100, help='Number of views per model.')
-        parser.add_argument('--image_height', type=int, default=640, help='Depth image height.')
+        parser.add_argument('--image_height', type=int, default=480, help='Depth image height.')
         parser.add_argument('--image_width', type=int, default=640, help='Depth image width.')
         parser.add_argument('--focal_length_x', type=float, default=640, help='Focal length in x direction.')
         parser.add_argument('--focal_length_y', type=float, default=640, help='Focal length in y direction.')
@@ -203,6 +204,29 @@ class Fusion:
         for i in range(len(Rs)):
             Rs[i] = Rs[i]
             Ts.append(np.array([0, 0, 1]))
+
+        data_dir = self.options.depth_dir.replace('depth', 'data')
+
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+
+        for i in range(len(Rs)):
+
+            R = Rs[i]
+            T = Ts[i]
+
+            extrinsics = np.eye(4)
+            extrinsics[:3, :3] = R
+            extrinsics[:3, 3] = T
+            np.savetxt(os.path.join(data_dir, '{}.extrinsics.txt'.format(i)), extrinsics)
+
+            intrinsics = self.fusion_intrisics
+            np.savetxt(os.path.join(data_dir, '{}.intrinsics.txt'.format(i)), intrinsics)
+
+            depth = np.copy(depthmaps[i])
+            depth *= 1000
+            depth = depth.astype(np.uint16)
+            cv2.imwrite(os.path.expanduser(os.path.join(data_dir, '{}.depth.png'.format(i))), depth)
 
         Ts = np.array(Ts).astype(np.float32)
         Rs = np.array(Rs).astype(np.float32)
