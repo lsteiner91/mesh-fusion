@@ -55,6 +55,10 @@ For building follow (illustrated for the GPU version):
     cd ..
     python setup.py build_ext --inplace
     
+    # add it to the paths
+    export PYTHONPATH=/path/to/libfusiongpu:$PYTHONPATH
+    export LD_LIBRARY_PATH=/path/to/libfusiongpu:$LD_LIBRARY_PATH
+    
     cd ..
     # build pyrender
     cd librender
