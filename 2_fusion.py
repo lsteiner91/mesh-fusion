@@ -7,8 +7,9 @@ import argparse
 import ntpath
 
 # Import shipped libraries.
-import librender
-import mcubes as libmcubes
+import librender.pyrender as librender
+# import mcubes as libmcubes
+import libmcubes
 import cv2
 
 use_gpu = True
