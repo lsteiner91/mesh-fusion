@@ -69,6 +69,10 @@ For building follow (illustrated for the GPU version):
     cd libmcubes
     python setup.py build_ext --inplace
 
+    cd ..
+    export PYTHONPATH=/path/to/librender:$PYTHONPATH
+
+
 ## Usage
 
 Usage is illustrated on the shipped examples in `examples/0_in` taken 
