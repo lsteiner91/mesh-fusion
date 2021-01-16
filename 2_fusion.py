@@ -7,7 +7,8 @@ import argparse
 import ntpath
 
 # Import shipped libraries.
-import librender.pyrender as librender
+# import librender.pyrender as librender
+import pyrender
 # import mcubes as libmcubes
 import libmcubes
 import cv2
@@ -173,7 +174,7 @@ class Fusion:
             np_faces = mesh.faces.astype(np.float64)
             np_faces += 1
 
-            depthmap, mask, img = librender.render(np_vertices.copy(), np_faces.T.copy(), self.render_intrinsics, self.znf, self.image_size)
+            depthmap, mask, img = pyrender.render(np_vertices.copy(), np_faces.T.copy(), self.render_intrinsics, self.znf, self.image_size)
 
             # This is mainly result of experimenting.
             # The core idea is that the volume of the object is enlarged slightly
