@@ -71,6 +71,8 @@ class Fusion:
         parser.add_argument('--in_dir', type=str, help='Path to input directory.')
         parser.add_argument('--depth_dir', type=str, help='Path to depth directory; files are overwritten!')
         parser.add_argument('--out_dir', type=str, help='Path to output directory; files within are overwritten!')
+        # added the tsdf_dir
+        parser.add_argument('--tsdf_dir', type=str, help='Path to output directory; files within are overwritten!')
         parser.add_argument('--n_views', type=int, default=100, help='Number of views per model.')
         parser.add_argument('--image_height', type=int, default=480, help='Depth image height.')
         parser.add_argument('--image_width', type=int, default=640, help='Depth image width.')
@@ -301,9 +303,13 @@ class Fusion:
             vertices /= self.options.resolution
             vertices -= 0.5
 
+            tsdf_file = os.path.join(self.options.tsdf_dir, '0.hf5')
             off_file = os.path.join(self.options.out_dir, ntpath.basename(filepath)[:-3])
+
+            common.write_hdf5(tsdf_file, tsdf)
             libmcubes.export_off(vertices, triangles, off_file)
             print('[Data] wrote %s (%f seconds)' % (off_file, timer.elapsed()))
+
 
 if __name__ == '__main__':
     app = Fusion()
